@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yatsku National Bank</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f4f5f1;--surface:#fff;--ink:#142033;--muted:#5b667a;--line:#d6d9d0;--green:#1f5e4b;--green-ink:#fff;--brass:#9a6f1c;--err:#a3281f;--okbg:#e6f1ea;--errbg:#f8e8e5;
+--serif:"Newsreader",Georgia,serif;--sans:"IBM Plex Sans",system-ui,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1620;--surface:#16212e;--ink:#e8ecf2;--muted:#9aa6b8;--line:#2a3849;--green:#4fa585;--green-ink:#07120d;--brass:#d4a64a;--err:#ff8b80;--okbg:#14291f;--errbg:#33191a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1620;--surface:#16212e;--ink:#e8ecf2;--muted:#9aa6b8;--line:#2a3849;--green:#4fa585;--green-ink:#07120d;--brass:#d4a64a;--err:#ff8b80;--okbg:#14291f;--errbg:#33191a;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);min-height:100vh}
+header{padding:28px 32px 20px;border-bottom:3px double var(--line)}
+header h1{font:600 clamp(26px,4vw,38px)/1.1 var(--serif);margin:0;letter-spacing:.01em}
+header p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1000px;margin:0 auto}
+nav{padding:24px 0 24px 24px;display:flex;flex-direction:column;gap:2px}
+nav button{font:500 15px var(--sans);text-align:left;background:none;border:0;border-left:3px solid transparent;color:var(--muted);padding:10px 14px;cursor:pointer;border-radius:0 6px 6px 0}
+nav button:hover{color:var(--ink);background:var(--surface)}
+nav button[aria-current="page"]{color:var(--ink);border-left-color:var(--brass);background:var(--surface)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+main{padding:24px 24px 48px}
+h2{font:600 26px/1.2 var(--serif);margin:0 0 4px}
+.desc{color:var(--muted);margin:0 0 20px;max-width:60ch}
+form{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:16px;max-width:520px}
+label{display:grid;gap:4px;font-weight:500;font-size:14px}
+label small{font-weight:400;color:var(--muted)}
+input,select{font:16px var(--sans);padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
+.go{font:600 16px var(--sans);background:var(--green);color:var(--green-ink);border:0;border-radius:4px;padding:12px 18px;cursor:pointer;justify-self:start}
+.go:hover{filter:brightness(1.1)}
+.preview{font-size:14px;color:var(--muted);min-height:1.4em}
+.preview b{color:var(--ink)}
+#out{margin-top:20px;max-width:520px}
+.msg{border-radius:6px;padding:14px 16px;border:1px solid var(--line)}
+.msg.ok{background:var(--okbg);border-color:var(--green)}
+.msg.err{background:var(--errbg);border-color:var(--err);color:var(--err)}
+.msg strong{display:block;margin-bottom:4px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:8px 0 0}
+dt{color:var(--muted)}dd{margin:0;font-variant-numeric:tabular-nums}
+.book{background:var(--surface);border:1px solid var(--line);border-left:10px solid var(--brass);border-radius:4px;padding:16px;overflow-x:auto;max-width:100%}
+.book h3{font:600 20px var(--serif);margin:0 0 2px}
+.book .sub{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-variant-numeric:tabular-nums;font-size:14px}
+th{text-align:left;font-weight:600;border-bottom:2px solid var(--ink);padding:6px 10px}
+td{padding:7px 10px;border-bottom:1px solid var(--line)}
+th.n,td.n{text-align:right}
+.fdhead{font:600 18px var(--serif);margin:24px 0 8px}
+@media (max-width:720px){
+.wrap{grid-template-columns:1fr}
+nav{flex-direction:row;overflow-x:auto;padding:12px 16px 0;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;border-left:0;border-bottom:3px solid transparent;border-radius:6px 6px 0 0}
+nav button[aria-current="page"]{border-bottom-color:var(--brass)}
+header{padding:20px 16px 14px}main{padding:20px 16px 40px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Yatsku National Bank</h1>
+<p>Savings accounts, fixed deposits and passbook statements</p>
+</header>
+<div class="wrap">
+<nav id="nav" aria-label="Bank operations"></nav>
+<main id="main"></main>
+</div>
+<script>
+(function(){
+var KEY="yatsku-bank-v1";
+var S={accounts:[],fds:[],tx:[]};
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.accounts)S=p;}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function $(s){return document.querySelector(s);}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function fmt(n){return "Rs. "+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function rnd(){return Math.floor(Math.random()*90000000)+10000000;}
+function uniq(list,key){var n;do{n=rnd();}while(list.some(function(x){return x[key]===n;}));return n;}
+function stamp(){var d=new Date(),p=function(x){return String(x).padStart(2,"0");};
+return p(d.getDate())+"-"+p(d.getMonth()+1)+"-"+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());}
+function record(acc,type,amount,bal){S.tx.push({acc:acc,time:stamp(),type:type,amount:amount,balance:bal});}
+function num(v,label){v=String(v).trim();if(!/^\d+$/.test(v))throw new Error(label+" must be a whole number.");return parseInt(v,10);}
+function amt(v){v=Number(String(v).trim());if(!isFinite(v)||v<=0)throw new Error("Enter a positive amount.");return v;}
+function acct(v){var n=num(v,"Account number");var a=S.accounts.find(function(x){return x.number===n;});if(!a)throw new Error("Account not found. Check the account number and try again.");return a;}
+function maturity(age,dep,yrs){var r=age>=60?0.07:0.067;return dep*Math.pow(1+r/4,4*yrs);}
+function rows(pairs){return "<dl>"+pairs.map(function(p){return "<dt>"+p[0]+"</dt><dd>"+p[1]+"</dd>";}).join("")+"</dl>";}
+function ok(t,body){return '<div class="msg ok" role="status"><strong>'+t+'</strong>'+body+'</div>';}
+
+var accField={id:"acc",label:"Account number",type:"text",mode:"numeric"};
+var views={
+open:{nav:"Open savings account",title:"Open a savings account",desc:"You must be 18 or older. The minimum opening deposit is Rs. 500.",
+fields:[{id:"name",label:"Full name",type:"text"},{id:"age",label:"Age",type:"text",mode:"numeric"},
+{id:"gender",label:"Gender",type:"select",opts:["Female","Male","Other","Prefer not to say"]},
+{id:"job",label:"Occupation",type:"text"},{id:"dep",label:"Initial deposit (Rs.)",type:"text",mode:"decimal",hint:"Minimum Rs. 500"}],
+btn:"Open account",
+run:function(v){
+if(!v.name.trim()||!v.job.trim())throw new Error("Name and occupation are required.");
+var age=num(v.age,"Age");var dep=amt(v.dep);
+if(age<18)throw new Error("You must be at least 18 to open an account.");
+if(dep<500)throw new Error("The minimum opening deposit is Rs. 500.");
+if(S.accounts.length>=1000)throw new Error("Account limit reached.");
+var a={number:uniq(S.accounts,"number"),name:v.name.trim().slice(0,49),age:age,gender:v.gender,job:v.job.trim().slice(0,49),balance:dep};
+S.accounts.push(a);record(a.number,"Account Opening",dep,dep);save();
+return ok("Account opened",rows([["Account number","<b>"+a.number+"</b>"],["Holder",esc(a.name)],["Balance",fmt(a.balance)]])+"<p>Keep your account number. You need it for every other operation.</p>");}},
+
+fd:{nav:"Fixed deposit",title:"Open a fixed deposit",desc:"Money moves from your savings balance into the deposit. Interest compounds quarterly: 6.7% a year, or 7% if you are 60 or older.",
+fields:[accField,{id:"dep",label:"Deposit amount (Rs.)",type:"text",mode:"decimal",hint:"Minimum Rs. 10,000"},{id:"yrs",label:"Tenure (years)",type:"text",mode:"numeric"}],
+btn:"Open fixed deposit",
+preview:function(v){try{var a=S.accounts.find(function(x){return x.number===parseInt(v.acc,10);});var d=Number(v.dep),y=parseInt(v.yrs,10);
+if(a&&d>0&&y>0)return "Maturity amount: <b>"+fmt(maturity(a.age,d,y))+"</b>";}catch(e){}return "Enter an account, amount and tenure to see the maturity amount.";},
+run:function(v){
+var a=acct(v.acc);var dep=amt(v.dep);var yrs=num(v.yrs,"Tenure");
+if(dep<10000||yrs<=0)throw new Error("The minimum deposit is Rs. 10,000 and the tenure must be at least 1 year.");
+if(dep>a.balance)throw new Error("Insufficient balance. Your savings balance is "+fmt(a.balance)+".");
+if(S.fds.length>=1000)throw new Error("Fixed deposit limit reached.");
+var f={number:uniq(S.fds,"number"),acc:a.number,deposit:dep,tenure:yrs,maturity:maturity(a.age,dep,yrs)};
+a.balance-=dep;S.fds.push(f);record(a.number,"FD Opening",dep,a.balance);save();
+return ok("Fixed deposit opened",rows([["FD number","<b>"+f.number+"</b>"],["Maturity amount",fmt(f.maturity)],["Savings balance left",fmt(a.balance)]]));}},
+
+deposit:{nav:"Deposit money",title:"Deposit money",desc:"Add money to a savings account.",
+fields:[accField,{id:"amt",label:"Amount (Rs.)",type:"text",mode:"decimal"}],btn:"Deposit",
+run:function(v){var a=acct(v.acc);var x=amt(v.amt);a.balance+=x;record(a.number,"Deposit",x,a.balance);save();
+return ok("Deposit successful",rows([["Deposited",fmt(x)],["Balance",fmt(a.balance)]]));}},
+
+withdraw:{nav:"Withdraw money",title:"Withdraw money",desc:"Take money out of a savings account.",
+fields:[accField,{id:"amt",label:"Amount (Rs.)",type:"text",mode:"decimal"}],btn:"Withdraw",
+run:function(v){var a=acct(v.acc);var x=amt(v.amt);if(x>a.balance)throw new Error("Insufficient balance. Your balance is "+fmt(a.balance)+".");
+a.balance-=x;record(a.number,"Withdrawal",x,a.balance);save();
+return ok("Withdrawal successful",rows([["Withdrawn",fmt(x)],["Balance",fmt(a.balance)]]));}},
+
+balance:{nav:"Check balance",title:"Check balance",desc:"See your savings balance and any fixed deposits.",
+fields:[accField],btn:"Show balance",
+run:function(v){var a=acct(v.acc);var out=ok(esc(a.name),rows([["Account number",a.number],["Savings balance","<b>"+fmt(a.balance)+"</b>"]]));
+var f=S.fds.filter(function(x){return x.acc===a.number;});
+if(f.length){out+='<div class="fdhead">Fixed deposits</div><div class="book"><table><thead><tr><th>FD number</th><th class="n">Deposit</th><th class="n">Years</th><th class="n">Maturity</th></tr></thead><tbody>'+
+f.map(function(x){return "<tr><td>"+x.number+'</td><td class="n">'+fmt(x.deposit)+'</td><td class="n">'+x.tenure+'</td><td class="n">'+fmt(x.maturity)+"</td></tr>";}).join("")+"</tbody></table></div>";}
+return out;}},
+
+history:{nav:"Transaction history",title:"Transaction history",desc:"A passbook statement for one account.",
+fields:[accField],btn:"Show statement",
+run:function(v){var a=acct(v.acc);var t=S.tx.filter(function(x){return x.acc===a.number;});
+if(!t.length)return '<div class="msg">No transactions found for this account.</div>';
+return '<div class="book"><h3>'+esc(a.name)+'</h3><p class="sub">Account '+a.number+'</p><table><thead><tr><th>Date and time</th><th>Transaction</th><th class="n">Amount</th><th class="n">Balance</th></tr></thead><tbody>'+
+t.map(function(x){return "<tr><td>"+x.time+"</td><td>"+esc(x.type)+'</td><td class="n">'+fmt(x.amount)+'</td><td class="n">'+fmt(x.balance)+"</td></tr>";}).join("")+"</tbody></table></div>";}}
+};
+var order=["open","fd","deposit","withdraw","balance","history"];
+var cur="open";
+
+function field(f){
+var h='<label>'+f.label+(f.hint?' <small>'+f.hint+'</small>':'');
+if(f.type==="select")h+='<select name="'+f.id+'">'+f.opts.map(function(o){return "<option>"+o+"</option>";}).join("")+"</select>";
+else h+='<input name="'+f.id+'" type="text" autocomplete="off"'+(f.mode?' inputmode="'+f.mode+'"':"")+' required>';
+return h+"</label>";}
+function vals(form){var o={};new FormData(form).forEach(function(v,k){o[k]=v;});return o;}
+
+function show(name){
+cur=name;var v=views[name];
+$("#nav").innerHTML=order.map(function(k){return '<button type="button" data-v="'+k+'"'+(k===name?' aria-current="page"':"")+">"+views[k].nav+"</button>";}).join("");
+$("#main").innerHTML="<h2>"+v.title+'</h2><p class="desc">'+v.desc+'</p><form id="f" novalidate>'+v.fields.map(field).join("")+
+(v.preview?'<div class="preview" id="pv" aria-live="polite"></div>':"")+'<button class="go" type="submit">'+v.btn+'</button></form><div id="out" aria-live="polite"></div>';
+var f=$("#f");
+if(v.preview){var up=function(){$("#pv").innerHTML=v.preview(vals(f));};f.addEventListener("input",up);up();}
+f.addEventListener("submit",function(e){e.preventDefault();var out=$("#out");
+try{out.innerHTML=v.run(vals(f));if(name!=="balance"&&name!=="history")f.reset();if(v.preview)$("#pv").innerHTML=v.preview(vals(f));}
+catch(err){out.innerHTML='<div class="msg err" role="alert"><strong>Could not complete this</strong>'+esc(err.message)+"</div>";}});
+if(location.hash!=="#"+name)history.replaceState(null,"","#"+name);
+}
+$("#nav").addEventListener("click",function(e){var b=e.target.closest("button[data-v]");if(b)show(b.dataset.v);});
+function fromHash(){var h=location.hash.slice(1);show(views[h]?h:"open");}
+window.addEventListener("hashchange",function(){var h=location.hash.slice(1);if(views[h]&&h!==cur)show(h);});
+fromHash();
+})();
+</script>
+</body>
+</html>
